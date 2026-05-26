@@ -114,22 +114,9 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthSync />
       <Outlet />
       <Toaster richColors position="top-right" />
     </QueryClientProvider>
   );
 }
 
-function AuthSync() {
-  const router = useRouter();
-  const qc = useQueryClient();
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      router.invalidate();
-      qc.invalidateQueries();
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [router, qc]);
-  return null;
-}
