@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AppSidebar } from "./app-sidebar";
 import { ChatWindow } from "./chat-window";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 
 export function ChatLayout({ threadId }: { threadId: string }) {
@@ -21,11 +21,9 @@ export function ChatLayout({ threadId }: { threadId: string }) {
 
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-14 border-b border-border flex items-center px-4 gap-2 md:hidden">
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
+          <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+            <Menu className="h-5 w-5" />
+          </Button>
           <span className="font-semibold">Worklytic</span>
         </header>
         <ChatWindow key={threadId} threadId={threadId} />
