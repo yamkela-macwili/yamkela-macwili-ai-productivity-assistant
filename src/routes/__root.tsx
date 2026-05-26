@@ -74,13 +74,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Worklytic — AI Workplace Productivity Assistant" },
+      { title: "AI-Workplace-Suite" },
       { name: "description", content: "Automate emails, summarize meetings, plan your schedule, and research faster with Worklytic's AI-powered workplace tools." },
-      { property: "og:title", content: "Worklytic — AI Workplace Productivity Assistant" },
+      { property: "og:title", content: "AI-Workplace-Suite" },
       { property: "og:description", content: "Automate emails, summarize meetings, plan your schedule, and research faster with Worklytic's AI-powered workplace tools." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Worklytic" },
+      { name: "twitter:title", content: "AI-Workplace-Suite" },
+      { name: "twitter:description", content: "Automate emails, summarize meetings, plan your schedule, and research faster with Worklytic's AI-powered workplace tools." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/727bacf3-472f-406a-a665-b9f7eebf8dcc/id-preview-53bc6ad1--2186217f-a25a-4b10-b83b-0cb2666bf534.lovable.app-1779806192778.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/727bacf3-472f-406a-a665-b9f7eebf8dcc/id-preview-53bc6ad1--2186217f-a25a-4b10-b83b-0cb2666bf534.lovable.app-1779806192778.png" },
     ],
     links: [
       {
