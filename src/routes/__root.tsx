@@ -74,14 +74,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Worklytic — AI Workplace Productivity Assistant" },
+      { name: "description", content: "Automate emails, summarize meetings, plan your schedule, and research faster with Worklytic's AI-powered workplace tools." },
+      { property: "og:title", content: "Worklytic — AI Workplace Productivity Assistant" },
+      { property: "og:description", content: "Automate emails, summarize meetings, plan your schedule, and research faster with Worklytic's AI-powered workplace tools." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@Worklytic" },
     ],
     links: [
       {
