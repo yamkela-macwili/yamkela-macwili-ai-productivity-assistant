@@ -2,7 +2,7 @@ import { useState } from "react";
 import { AppSidebar } from "./app-sidebar";
 import { ChatWindow } from "./chat-window";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 
 export function ChatLayout({ threadId }: { threadId: string }) {
