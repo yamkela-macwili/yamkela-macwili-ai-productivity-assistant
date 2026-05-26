@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { getThread } from "@/lib/threads.functions";
-import { supabase } from "@/integrations/supabase/client";
+import { getThread, saveMessages } from "@/lib/threads";
 import { MODE_META, type ChatMode } from "@/lib/prompts";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,13 +16,21 @@ import { cn } from "@/lib/utils";
 export function ChatWindow({ threadId }: { threadId: string }) {
   const { data, isLoading } = useQuery({
     queryKey: ["thread", threadId],
-    queryFn: () => getThread({ data: { id: threadId } }),
+    queryFn: () => getThread(threadId),
   });
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return (
       <div className="flex-1 grid place-items-center text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="flex-1 grid place-items-center text-muted-foreground text-sm">
+        Chat not found.
       </div>
     );
   }
@@ -34,7 +41,7 @@ export function ChatWindow({ threadId }: { threadId: string }) {
       threadId={threadId}
       mode={data.thread.mode}
       title={data.thread.title}
-      initialMessages={data.messages.map((m) => m.content as unknown as UIMessage)}
+      initialMessages={data.messages.map((m) => m.content as UIMessage)}
     />
   );
 }
@@ -50,23 +57,17 @@ function ChatInner({
   title: string;
   initialMessages: UIMessage[];
 }) {
+  const qc = useQueryClient();
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        prepareSendMessagesRequest: async ({ messages }) => {
-          const { data } = await supabase.auth.getSession();
-          const token = data.session?.access_token;
-          return {
-            headers: {
-              "Content-Type": "application/json",
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: { messages, threadId, mode },
-          };
-        },
+        prepareSendMessagesRequest: ({ messages }) => ({
+          headers: { "Content-Type": "application/json" },
+          body: { messages, mode },
+        }),
       }),
-    [threadId, mode],
+    [mode],
   );
 
   const { messages, sendMessage, status, error, regenerate } = useChat({
@@ -74,6 +75,11 @@ function ChatInner({
     messages: initialMessages,
     transport,
     onError: (e) => toast.error(e.message || "Something went wrong."),
+    onFinish: () => {
+      void saveMessages(threadId, messages).then(() => {
+        qc.invalidateQueries({ queryKey: ["threads"] });
+      });
+    },
   });
 
   const inputRef = useRef<HTMLTextAreaElement>(null);

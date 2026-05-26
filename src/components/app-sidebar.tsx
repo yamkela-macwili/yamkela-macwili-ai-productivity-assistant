@@ -1,22 +1,8 @@
-import { useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  listThreads,
-  createThread,
-  deleteThread,
-} from "@/lib/threads.functions";
+import { listThreads, createThread, deleteThread } from "@/lib/threads";
 import { MODE_META, type ChatMode } from "@/lib/prompts";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sparkles,
@@ -27,9 +13,6 @@ import {
   MessageSquare,
   Plus,
   Trash2,
-  LogOut,
-  User,
-  MoreHorizontal,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -45,7 +28,8 @@ const MODE_ICONS: Record<ChatMode, React.ComponentType<{ className?: string }>> 
 export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // keep subscription so list updates when route changes
+  useRouterState({ select: (s) => s.location.pathname });
 
   const { data: threads = [] } = useQuery({
     queryKey: ["threads"],
@@ -53,7 +37,7 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
   });
 
   const createMut = useMutation({
-    mutationFn: (mode: ChatMode) => createThread({ data: { mode } }),
+    mutationFn: (mode: ChatMode) => createThread({ mode }),
     onSuccess: (t) => {
       qc.invalidateQueries({ queryKey: ["threads"] });
       navigate({ to: "/chat/$threadId", params: { threadId: t.id } });
@@ -62,17 +46,12 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id: string) => deleteThread({ data: { id } }),
+    mutationFn: (id: string) => deleteThread(id),
     onSuccess: async (_d, id) => {
       await qc.invalidateQueries({ queryKey: ["threads"] });
       if (id === activeThreadId) navigate({ to: "/chat" });
     },
   });
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    window.location.replace("/login");
-  }
 
   return (
     <aside className="w-72 shrink-0 border-r border-border bg-sidebar text-sidebar-foreground flex flex-col h-full">
@@ -159,25 +138,8 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
         </div>
       </ScrollArea>
 
-      <div className="p-3 border-t border-sidebar-border">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="w-full justify-start gap-2 px-2">
-              <div className="h-7 w-7 rounded-full bg-muted grid place-items-center">
-                <User className="h-3.5 w-3.5" />
-              </div>
-              <span className="text-sm">Account</span>
-              <MoreHorizontal className="h-4 w-4 ml-auto" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" side="top" className="w-56">
-            <DropdownMenuLabel>Signed in</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={signOut} className="text-destructive">
-              <LogOut className="h-4 w-4 mr-2" /> Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="p-3 border-t border-sidebar-border text-[11px] text-muted-foreground">
+        Chats are saved locally in this browser.
       </div>
     </aside>
   );
