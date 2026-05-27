@@ -1,11 +1,18 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { listThreads, createThread, deleteThread } from "@/lib/threads";
+import {
+  listThreads,
+  createThread,
+  deleteThread,
+  getThread,
+  setThreadMode,
+  findEmptyThread,
+} from "@/lib/threads";
 import { MODE_META, type ChatMode } from "@/lib/prompts";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Sparkles,
+  BrainCircuit,
   Mail,
   FileText,
   CalendarClock,
@@ -36,11 +43,27 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
     queryFn: () => listThreads(),
   });
 
-  const createMut = useMutation({
-    mutationFn: (mode: ChatMode) => createThread({ mode }),
-    onSuccess: (t) => {
+  const pickMut = useMutation({
+    mutationFn: async (mode: ChatMode) => {
+      // 1. If active thread is empty, just switch its mode
+      if (activeThreadId) {
+        const cur = await getThread(activeThreadId);
+        if (cur && (cur.messages ?? []).length === 0) {
+          await setThreadMode(activeThreadId, mode);
+          return { id: activeThreadId, reused: true };
+        }
+      }
+      // 2. Reuse any existing empty thread of this mode
+      const empty = await findEmptyThread(mode);
+      if (empty) return { id: empty.id, reused: true };
+      // 3. Otherwise create a new thread
+      const t = await createThread({ mode });
+      return { id: t.id, reused: false };
+    },
+    onSuccess: ({ id }) => {
       qc.invalidateQueries({ queryKey: ["threads"] });
-      navigate({ to: "/chat/$threadId", params: { threadId: t.id } });
+      qc.invalidateQueries({ queryKey: ["thread", id] });
+      navigate({ to: "/chat/$threadId", params: { threadId: id } });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -56,10 +79,12 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
   return (
     <aside className="w-72 shrink-0 border-r border-border bg-sidebar text-sidebar-foreground flex flex-col h-full">
       <div className="p-4 border-b border-sidebar-border flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground grid place-items-center">
-          <Sparkles className="h-4 w-4" />
-        </div>
-        <span className="font-semibold">Worklytic</span>
+        <Link to="/" className="flex items-center gap-2 flex-1 min-w-0" aria-label="Home">
+          <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground grid place-items-center shrink-0">
+            <BrainCircuit className="h-4 w-4" />
+          </div>
+          <span className="font-semibold truncate">AI Productivity Assistant</span>
+        </Link>
       </div>
 
       <div className="p-3 space-y-1">
