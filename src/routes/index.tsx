@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BrainCircuit, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { BrainCircuit, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/")({
