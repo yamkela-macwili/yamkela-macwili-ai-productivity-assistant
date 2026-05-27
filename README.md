@@ -12,11 +12,11 @@ AI Productivity Assistant is a modern, high-performance web application that hel
 
 ### Landing Page
 
-![Landing Page](./screenshots/landing-page.jpeg)
+![Landing Page](./public/landing-page.jpeg)
 
 ### Application Interface
 
-![Application Interface](./screenshots/app.jpeg)
+![Application Interface](./public/app.jpeg)
 
 ---
 
