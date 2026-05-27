@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { AppSidebar } from "./app-sidebar";
 import { ChatWindow } from "./chat-window";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, Home } from "lucide-react";
 
 export function ChatLayout({ threadId }: { threadId: string }) {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,12 @@ export function ChatLayout({ threadId }: { threadId: string }) {
           <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <span className="font-semibold">Worklytic</span>
+          <span className="font-semibold flex-1">AI Productivity Assistant</span>
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/" aria-label="Home">
+              <Home className="h-5 w-5" />
+            </Link>
+          </Button>
         </header>
         <ChatWindow key={threadId} threadId={threadId} />
       </main>

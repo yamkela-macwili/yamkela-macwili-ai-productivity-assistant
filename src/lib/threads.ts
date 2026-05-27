@@ -84,6 +84,24 @@ export async function deleteThread(id: string) {
   writeAll(all);
 }
 
+export async function setThreadMode(id: string, mode: ChatMode) {
+  const all = readAll();
+  if (all[id]) {
+    all[id].mode = mode;
+    all[id].updated_at = new Date().toISOString();
+    writeAll(all);
+  }
+}
+
+export async function findEmptyThread(mode?: ChatMode): Promise<StoredThread | null> {
+  const all = Object.values(readAll());
+  const empty = all.filter((t) => (t.messages ?? []).length === 0);
+  if (mode) {
+    return empty.find((t) => t.mode === mode) ?? null;
+  }
+  return empty[0] ?? null;
+}
+
 export async function getThread(id: string): Promise<{
   thread: { id: string; title: string; mode: ChatMode };
   messages: StoredMessage[];
