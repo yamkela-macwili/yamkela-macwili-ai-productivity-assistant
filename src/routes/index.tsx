@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BrainCircuit, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { BrainCircuit, ArrowRight, CheckCircle2 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/")({
@@ -62,20 +62,16 @@ function LandingPage() {
 
       <main className="flex-1 flex items-center justify-center px-6">
         <div className="max-w-2xl text-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 backdrop-blur px-3 py-1 text-xs text-muted-foreground mb-6">
-            <Sparkles className="h-3 w-3 text-primary" />
-            Powered by modern AI
-          </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
-            Your AI-powered
+            The smarter way to
             <br />
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              workplace assistant
+              get work done
             </span>
           </h1>
           <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed">
-            Draft emails in seconds, summarize meetings automatically, build focused schedules,
-            and research faster — all in one clean, fast interface.
+            An AI-powered assistant that writes your emails, summarizes meetings, builds
+            focused schedules, and delivers insights — all in one fast, modern workspace.
           </p>
           <div className="mt-8 flex justify-center">
             <Link
@@ -102,6 +98,16 @@ function LandingPage() {
           </div>
         </div>
       </main>
+
+      <footer className="w-full border-t border-border/60">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-1 text-xs text-muted-foreground text-center">
+          <p>AI responses may be inaccurate. Review important output before relying on it.</p>
+          <p>
+            © {new Date().getFullYear()} · Developed by{" "}
+            <span className="font-medium text-foreground">Yamkela Macwili</span>
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
