@@ -96,8 +96,8 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
           return (
             <button
               key={mode}
-              onClick={() => createMut.mutate(mode)}
-              disabled={createMut.isPending}
+              onClick={() => pickMut.mutate(mode)}
+              disabled={pickMut.isPending}
               className="w-full flex items-center gap-3 px-2.5 py-2 rounded-md text-sm hover:bg-sidebar-accent transition-colors text-left"
             >
               <Icon className="h-4 w-4 text-primary shrink-0" />
@@ -116,7 +116,7 @@ export function AppSidebar({ activeThreadId }: { activeThreadId?: string }) {
           variant="ghost"
           size="icon"
           className="h-6 w-6"
-          onClick={() => createMut.mutate("general")}
+          onClick={() => pickMut.mutate("general")}
         >
           <Plus className="h-3.5 w-3.5" />
         </Button>
